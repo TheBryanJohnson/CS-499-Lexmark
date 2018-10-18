@@ -1,11 +1,11 @@
 # CS 499
-Section:    2
-Team:       5
+Section:    2  
+Team:       5  
 \#DreamScheme
   
-Website:
+Website:  
 https://cs499lexmarkteam.home.blog/
   
-Class Website:
+Class Website:  
 http://selab.netlab.uky.edu/homepage/CS499fall18.htm
 
