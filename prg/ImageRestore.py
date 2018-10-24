@@ -4,15 +4,25 @@ import numpy as np
 from PIL import Image
 
 class ImageRestore:
+    
+    resolutions = { 
+        "150" : (1275, 1650),
+        "200" : (1700, 2200),
+        "300" : (2550, 3300)
+    }
+
     def __init__(self):
         self.inImage = Image.new('RGBA', [0, 0])
-        self.outImage = Image.new('RGBA', [0, 0])
-        self.pixelArray = np.empty((0,0), np.int8)
+        self.outImage = Image.new('L', [0, 0])
+        self.pixelArray = np.empty((0,0), np.uint8)
+        self.outputSize = "300"
 
     def prepare(self, filename):
         self.openImage(filename)
         self.convertToGreyscale()
         self.createPixelArray()
+        self.padImage()
+        self.printArray()
 
     def openImage(self, filename):
         try:
@@ -26,6 +36,17 @@ class ImageRestore:
 
     def createPixelArray(self):
         self.pixelArray = np.fromstring(self.inImage.tobytes(), dtype=np.uint8)
-        self.pixelArray = self.pixelArray.reshape((self.inImage.size[0], self.inImage.size[1]))
-        for i in self.pixelArray:
-            print(i)
+        self.pixelArray.shape = (self.inImage.size[0], self.inImage.size[1])
+
+    def padImage(self):
+        if self.pixelArray.shape == self.resolutions[self.outputSize]:
+            return
+        newArr = np.zeros(self.resolutions[self.outputSize], dtype=np.uint8)
+        for i in range(self.pixelArray.shape[0]):
+            for j in range(self.pixelArray[i].size):
+                newArr[i][j] = self.pixelArray[i][j]
+        self.pixelArray = newArr
+
+    def printArray(self):
+        for i in self.pixelArray[0:20]:       #debug
+            print(i[0:20])
