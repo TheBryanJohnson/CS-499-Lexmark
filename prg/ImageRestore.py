@@ -18,15 +18,22 @@ class ImageRestore:
         self.outputSize = "300"
 
     def prepare(self, filename):
-        self.openImage(filename)
+        if (self.openImage(filename) < 0):
+            return -1
         self.convertToGreyscale()
         self.createPixelArray()
         self.padImage()
         self.printArray()
+        return 0
+
+    def outputImage(self, filename):
+        self.pixelArrayToImage()
+        return self.saveOutputImage(filename)
 
     def openImage(self, filename):
         try:
             self.inImage = Image.open(filename)
+            return 0
         except IOError:
             print("Error:  Input file path not valid")
             return -1
@@ -46,6 +53,17 @@ class ImageRestore:
             for j in range(self.pixelArray[i].size):
                 newArr[i][j] = self.pixelArray[i][j]
         self.pixelArray = newArr
+
+    def pixelArrayToImage(self):
+        self.outImage = Image.fromarray(self.pixelArray, 'L')
+
+    def saveOutputImage(self, filename):
+        try:
+            self.outImage.save(filename)
+            return 0
+        except IOError:
+            print("Error:  Image could not be saved")
+            return -1
 
     def printArray(self):
         for i in self.pixelArray[0:20]:       #debug
