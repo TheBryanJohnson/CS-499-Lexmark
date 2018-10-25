@@ -6,9 +6,9 @@ from PIL import Image
 class ImageRestore:
     
     resolutions = { 
-        "150" : (1275, 1650),
-        "200" : (1700, 2200),
-        "300" : (2550, 3300)
+        "150" : (1650, 1275),
+        "200" : (2200, 1700),
+        "300" : (3300, 2550)
     }
 
     def __init__(self):
@@ -43,7 +43,7 @@ class ImageRestore:
 
     def createPixelArray(self):
         self.pixelArray = np.fromstring(self.inImage.tobytes(), dtype=np.uint8)
-        self.pixelArray.shape = (self.inImage.size[0], self.inImage.size[1])
+        self.pixelArray.shape = (self.inImage.size[1], self.inImage.size[0])
 
     def padImage(self):
         if self.pixelArray.shape == self.resolutions[self.outputSize]:
@@ -66,5 +66,5 @@ class ImageRestore:
             return -1
 
     def printArray(self):
-        for i in self.pixelArray[0:20]:       #debug
-            print(i[0:20])
+        for i in self.pixelArray[0:10]:       #debug
+            print(i[0:10])
