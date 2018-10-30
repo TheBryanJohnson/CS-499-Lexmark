@@ -17,9 +17,10 @@ class ImageRestore:
         self.pixelArray = np.empty((0,0), np.uint8)
         self.outputSize = "300"
 
-    def prepare(self, filename):
+    def prepare(self, filename, size):
         if (self.openImage(filename) < 0):
             return -1
+        self.setOutputResolution(size)
         self.convertToGreyscale()
         self.createPixelArray()
         self.padImage()
@@ -38,6 +39,18 @@ class ImageRestore:
             print("Error:  Input file path not valid")
             return -1
     
+    def setOutputResolution(self, size):
+        if size in self.resolutions:
+            self.outputSize = size
+            return
+        for name, coord in sorted(self.resolutions.items()):
+            print(self.inImage.size, '\t', coord)       #debug
+            
+            if self.inImage.size <= coord:
+                self.outputSize = name
+                return
+        self.outputSize = "300"     #image is too large
+
     def convertToGreyscale(self):
         self.inImage = self.inImage.convert('L')
 
