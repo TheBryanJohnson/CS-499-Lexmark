@@ -11,17 +11,28 @@ class ImageRestore:
         "300" : (3300, 2550)
     }
 
+    filters = {
+        "nearest" : Image.NEAREST,
+        "box" : Image.BOX,
+        "bilinear" : Image.BILINEAR,
+        "hamming" : Image.HAMMING,
+        "bicubic" : Image.BICUBIC,
+        "lanczos" : Image.LANCZOS
+    }
+
     def __init__(self):
         self.inImage = Image.new('RGBA', [0, 0])
         self.outImage = Image.new('L', [0, 0])
         self.pixelArray = np.empty((0,0), np.uint8)
         self.outputSize = "300"
 
-    def prepare(self, filename, size):
+    def prepare(self, filename, size, resample, filterName):
         if (self.openImage(filename) < 0):
             return -1
         self.setOutputResolution(size)
         self.convertToGreyscale()
+        if resample:
+            self.resizeImage(filterName)
         self.createPixelArray()
         self.padImage()
         self.printArray()
@@ -53,6 +64,10 @@ class ImageRestore:
 
     def convertToGreyscale(self):
         self.inImage = self.inImage.convert('L')
+
+    def resizeImage(self, filterName):
+        self.inImage = self.inImage.resize((self.resolutions[self.outputSize][1], self.resolutions[self.outputSize][0]), self.filters[filterName])
+        print(self.inImage.size)
 
     def createPixelArray(self):
         self.pixelArray = np.fromstring(self.inImage.tobytes(), dtype=np.uint8)
