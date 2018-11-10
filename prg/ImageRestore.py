@@ -173,13 +173,13 @@ class ImageRestore:
                                                                 #to convert
 
     def saveOutputImage(self, filename):
-    '''
+        '''
         Saves image to specified filename
             Input:
                 filename: string file path indicating where to save image
             Output:
                 0 if successful, -1 if not
-    '''
+        '''
         try:
             self.outImage.save(filename)
             return 0
