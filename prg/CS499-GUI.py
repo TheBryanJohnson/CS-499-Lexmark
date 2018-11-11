@@ -23,7 +23,7 @@ from PIL import Image, ImageTk
 from ImageRestore import ImageRestore
 
 #master is a frame that holds the rest of the panels and buttons
-master = Frame(height=300, width=670, bd=3, background="light blue")
+master = Frame(height=300, width=750, bd=3, background="light blue")
 master.grid_propagate(0)
 master.pack()
 
@@ -97,11 +97,9 @@ def restoreImg():
     #run the restore
     ir.openImage(fileName)
     ir.restore()
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    saveFile = dummyFile # This needs to be changed to get the output image
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ir.saveOutputImage('.out.png')
     #return new image
-    img2 = Image.open(dummyFile)
+    img2 = Image.open('.out.png')
     img2.thumbnail((200,200),resample=3)
     labelImg2 = ImageTk.PhotoImage(img2)
     postLabel.configure(image = labelImg2)
@@ -119,13 +117,12 @@ toSave = 0
 def saveAs():
     global this, img2
     #this opens the file dialog for saving
-    this = filedialog.asksaveasfile(mode='w', defaultextension='.jpg')
+    this = filedialog.asksaveasfile(mode='w', defaultextension='.png')
     if this is None: #closed with cancel option
         return
     #save the new image uder the typed in name
-    img2.save(this.name)
-    
-    
+    ir.saveOutputImage(this.name)
+
 saveButton = Button(controlFrame, text="SAVE AS", command= saveAs)
 saveButton.grid(column=6, row=0, padx=50, pady=5, sticky=E)
 
