@@ -95,7 +95,8 @@ def restoreImg():
     #receive the input file
     dummyFile = fileName
     #run the restore
-    ir.restore(image = dummyFile)
+    ir.openImage(fileName)
+    ir.restore()
     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     saveFile = dummyFile # This needs to be changed to get the output image
     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
