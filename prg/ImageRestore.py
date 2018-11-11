@@ -1,6 +1,7 @@
 #!/bin/python3
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
+from net import Restorer
 
 class ImageRestore:
     
@@ -70,6 +71,39 @@ class ImageRestore:
         self.pixelArrayToImage()
         return self.saveOutputImage(filename)
 
+    def threshold(self, p):
+        if 0 <= p < 120:
+            return 0
+        elif 120 <= p < 140:
+            return 120
+        elif 140 <= p < 160:
+            return 140
+        elif 160 <= p < 180:
+            return 160
+        elif 180 <= p < 200:
+            return 180
+        else:
+            return 255
+
+    def restore(self, image=None, useMachineLearning=False):
+        if image == None:
+            image = self.inImage
+        if (useMachineLearning):
+            rs = Restorer()
+            self.outImage = rs.restore(image)
+            print(image.size)
+            print(1)
+            return self.outImage
+        self.outImage = image
+        # convert to grayscale
+        self.outImage = self.outImage.convert('L')
+        # resize to 300 DPI
+        self.outImage = self.outImage.resize((2550, 3300), Image.LANCZOS)
+        # image preprocessing
+        self.outImage = self.outImage.filter(ImageFilter.GaussianBlur(1))
+        self.outImage = self.outImage.point(self.threshold)
+        return self.outImage
+
     def openImage(self, filename):
         '''
         Opens image at filename
@@ -78,13 +112,7 @@ class ImageRestore:
             Output:
                 0 if successful, -1 if not
         '''
-        try:
-            self.inImage = Image.open(filename)
-            return 0
-
-        except IOError:
-            print("Error:  Input file path not valid")
-            return -1
+        self.inImage = Image.open(filename)
     
     def setOutputResolution(self, size):
         '''
@@ -180,12 +208,7 @@ class ImageRestore:
             Output:
                 0 if successful, -1 if not
         '''
-        try:
-            self.outImage.save(filename)
-            return 0
-        except IOError:
-            print("Error:  Image could not be saved")
-            return -1
+        self.outImage.save(filename)
 
     def printArray(self):
         '''

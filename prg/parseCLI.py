@@ -23,7 +23,8 @@ def parseCLI():
         type=str, 
         nargs=1, 
         help="The location where you would like the output saved")
-    
+
+    '''
     #specifies size of output image
     parser.add_argument("-s", "--size", 
         metavar="Size", 
@@ -42,11 +43,15 @@ def parseCLI():
         choices=["nearest", "box", "bilinear", "hamming", "bicubic", "lanczos"], 
         default="nearest", 
         help="Selects a filter to use for resizing the image.  Only used when -r or --resample is specified.  choices are nearest, box, bilinear, hamming, bicubic, and lanczos.  The default is nearest.")
-    
+    '''
+
+    parser.add_argument("-m", "--use-machine-learning", 
+        action="store_true",
+        help="Include flag in order to use the experimental machine learning model in deciding output.")
     #displays version of program
     parser.add_argument("--version", 
         action="version", 
-        version="%(prog)s 0.1")
+        version="%(prog)s 1.0")
     
     #call that actually parsed the above arguments
     args = parser.parse_args()

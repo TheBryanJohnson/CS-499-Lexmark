@@ -57,7 +57,9 @@ class Restorer:
             return 255
 
     def restore(self, image):
+        print ("here")
         # image preprocessing
+        image = image.convert('L')
         image = image.filter(ImageFilter.GaussianBlur(1))
         image = image.point(Restorer.__threshold)
         width = int(self.pixelsPerInch * 8.5)
@@ -81,6 +83,8 @@ class Restorer:
         out = self.net.predict(pixels, batch_size=1)
         # reshape
         out = numpy.reshape(out, (height, width))
+        out = numpy.multiply(out, 255.0)
+        out = numpy.uint8(out)
         # convert back to image
         image = Image.fromarray(out)
         # return
@@ -210,8 +214,9 @@ class Restorer:
         outfilename = 'out-{}dpi-{}qf-{}.png'.format(dpi, qf, pn)
         out.save(outfilename)
         print('saved to {}'.format(outfilename))
-
-
-res = Restorer()
-res._test()
-
+'''
+if __name__ == "__main__":
+    main()
+    res = Restorer()
+    res._test()
+'''
