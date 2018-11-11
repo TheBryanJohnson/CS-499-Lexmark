@@ -1,4 +1,15 @@
 # This is the GUI for CS499 Lexmark Team
+'''
+Instruction Manual:
+To use this program, please press the "open" button and select the image file
+that you would like to restore. Once the image has been selected and a thumbnail
+of that image has been loaded into the frame on the left, press "restore". This 
+will send the image through a machine learning model to remove JPG artifacts and
+clean the image. Once a new thumbnail has been produced in the frame on the right,
+the user is free to press "save as" and save the new image file under a desired 
+name and place.
+
+'''
 
 #TO DO:
 #make instruction manual
@@ -7,9 +18,9 @@
 #flags if user messes up
 
 from tkinter import *
-from PIL import Image, ImageTk
 from tkinter import filedialog
-
+from PIL import Image, ImageTk
+from ImageRestore import ImageRestore
 
 #master is a frame that holds the rest of the panels and buttons
 master = Frame(height=300, width=670, bd=3, background="light blue")
@@ -26,10 +37,6 @@ postImg = Frame(master, height=200, width=200, bd=3, background="purple", relief
 postImg.grid_propagate(0)
 postImg.grid(column=2, row=0, columnspan=1, rowspan=1, padx=5, pady=5)
 
-#menuFrame is a frame that holds the options for machine learning model
-menuFrame = Frame(master, height=200, width=100, bd=3, background="light blue")
-menuFrame.grid(column=1, row=0, columnspan=1, rowspan=1, padx=5, pady=5)
-
 #controlFrame is a frame that holds various buttons for controlling the program
 controlFrame = Frame(master, height=100, width=100, bd=3, background="light blue")
 controlFrame.grid(column=0, row=1, columnspan=3, rowspan=1, padx=50, pady=10)
@@ -44,10 +51,22 @@ preLabel = Label(preImg, height = 200, width = 200)
 def getFileName():
     #call global variable so variables can be accessed outside the definition
     global labelImg1, img1, fileName, preLabel  
+    img1 = 0
     #open file browser and request a file, also make sure that file is of the accepted type
-    acceptedTypes = [("Image File", "*.jpg") , ("Image File", "*.gif") , ("Image File", "*.tiff"), ("Image File", "*.png")]
-    fileName = filedialog.askopenfilename(filetypes = acceptedTypes)
-    img1 = Image.open(fileName)
+    acceptedTypes = [
+        ("Image File", "*.jpg"),
+        ("Image File", "*.jpeg"),
+        ("Image File", "*.bmp"),
+        ("Image File", "*.gif"),
+        ("Image File", "*.tiff"),
+        ("Image File", "*.png")
+    ]
+    while 0 == img1:
+        fileName = filedialog.askopenfilename(filetypes=acceptedTypes)
+        try:
+            img1 = Image.open(fileName)
+        except IOError:
+            print('cannot open {} as an image'.format(fileName))
     #dont need the quality for GUI display so made a thumbnail
     img1.thumbnail((200,200), resample=3)
     #put the thumbnail in a label, put the label in the preImg frame
@@ -55,7 +74,6 @@ def getFileName():
     preLabel.configure(image = labelImg1)
     preLabel.image = labelImg1
     preLabel.pack(side="right", expand=True)
-
     
 #openButton calls getFileName upon user click
 openButton = Button(controlFrame, text="OPEN", command = getFileName)
@@ -68,13 +86,16 @@ dummyFile = 0
 saveFile = 0
 postLabel = Label(postImg, width = 200, height = 200)
 
+#tulers function for restore
+ir = ImageRestore()
+
 #restoreImg takes the input file, runs it through the machine learning model, and returns a new file to be saved
 def restoreImg():
-    global filename, labelImg2, img2, dummyFile, saveFile
+    global fileName, labelImg2, img2, dummyFile, saveFile, ir
     #receive the input file
     dummyFile = fileName
-    #!!!!!!!!!!!!!!!!!!!get the option
-    #!!!!!!!!!!!!!!!!!!!run the restore
+    #run the restore
+    ir.restore(image = dummyFile)
     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     saveFile = dummyFile # This needs to be changed to get the output image
     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -106,24 +127,5 @@ def saveAs():
     
 saveButton = Button(controlFrame, text="SAVE AS", command= saveAs)
 saveButton.grid(column=6, row=0, padx=50, pady=5, sticky=E)
-
-#used for drop menu
-tkvar = StringVar()
-
-# Array with options
-options = [ '100dpi','200dpi','300dpi']
-tkvar.set('300dpi') # set the default option
-
-dropMenu = OptionMenu(menuFrame, tkvar, *options)
-Label(menuFrame, text="Restore to:").grid(row = 0, column = 0, padx=5, pady=5)
-dropMenu.grid(row = 0, column =1)
-
-# on change dropdown value
-def change_dropdown(*args):
-    print( tkvar.get() )
-
-# link function to change dropdown
-tkvar.trace('w', change_dropdown)
-
 
 mainloop()
