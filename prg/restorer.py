@@ -33,8 +33,7 @@ def main():
         print("Cannot save file: ", outputFilePath)
         return
     if __debug__:
-        print(args)                 #debug
-        print("End of main")        #debug
+        print("End of main")
 
 if __name__ == "__main__":
     main()

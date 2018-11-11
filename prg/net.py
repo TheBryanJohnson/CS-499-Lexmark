@@ -57,7 +57,6 @@ class Restorer:
             return 255
 
     def restore(self, image):
-        print ("here")
         # image preprocessing
         image = image.convert('L')
         image = image.filter(ImageFilter.GaussianBlur(1))

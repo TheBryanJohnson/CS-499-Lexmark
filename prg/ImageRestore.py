@@ -91,8 +91,6 @@ class ImageRestore:
         if (useMachineLearning):
             rs = Restorer()
             self.outImage = rs.restore(image)
-            print(image.size)
-            print(1)
             return self.outImage
         self.outImage = image
         # convert to grayscale
