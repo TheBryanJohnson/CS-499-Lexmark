@@ -213,9 +213,9 @@ class Restorer:
         outfilename = 'out-{}dpi-{}qf-{}.png'.format(dpi, qf, pn)
         out.save(outfilename)
         print('saved to {}'.format(outfilename))
-'''
+
 if __name__ == "__main__":
     main()
     res = Restorer()
     res._test()
-'''
+
