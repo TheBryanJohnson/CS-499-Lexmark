@@ -96,7 +96,7 @@ class ImageRestore:
         # convert to grayscale
         self.outImage = self.outImage.convert('L')
         # resize to 300 DPI
-        self.outImage = self.outImage.resize((2550, 3300), Image.LANCZOS)
+        # self.outImage = self.outImage.resize((2550, 3300), Image.LANCZOS)
         # image preprocessing
         self.outImage = self.outImage.filter(ImageFilter.GaussianBlur(1))
         self.outImage = self.outImage.point(self.threshold)
